@@ -23,11 +23,12 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     javaHomeOption: 'Path'
     mavenOptions: '-Xmx3072m'
-    jdkVersionOption: 1.17
+    jdkVersionOption: 1.21       # <-- Updated this
     mavenVersionOption: 'Default'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
+
 
 # Step 3: Publish Test Results
 - task: PublishTestResults@2
