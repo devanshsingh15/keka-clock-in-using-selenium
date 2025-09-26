@@ -1,0 +1,37 @@
+# Azure Pipeline for Selenium Java Project
+
+trigger:
+- main   # Runs pipeline whenever you push to main branch
+
+pool:
+  vmImage: 'windows-latest'   # Better for running Selenium with browsers
+
+steps:
+# Step 1: Set up JDK
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '21'         # or 17 depending on your local Java
+    jdkArchitecture: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+# Step 2: Build & Run Tests using Maven
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean test'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'Path'
+    mavenOptions: '-Xmx3072m'
+    jdkVersionOption: 1.17
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+# Step 3: Publish Test Results
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    mergeTestResults: true
+    testRunTitle: 'Selenium Tests'
