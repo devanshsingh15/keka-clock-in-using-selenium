@@ -4,7 +4,7 @@ trigger:
 - main   # Runs pipeline whenever you push to main branch
 
 pool:
-  vmImage: 'windows-latest'   # Better for running Selenium with browsers
+  name: Default   # Better for running Selenium with browsers
 
 steps:
 # Step 1: Set up JDK
