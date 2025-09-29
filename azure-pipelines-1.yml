@@ -13,11 +13,12 @@ steps:
 - checkout: self
 
 # Step 2: Install JDK 21 (use built-in task)
-- task: UseJavaVersion@1
-  inputs:
-    versionSpec: '21'
-    jdkArchitecture: 'x64'
-    jdkSourceOption: 'PreInstalled'
+- powershell: |
+    choco install openjdk21 --no-progress -y
+    $jdkPath = (Get-Command java).Source | Split-Path -Parent -Parent
+    echo "JAVA_HOME=$jdkPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+    java -version
+  displayName: 'Install JDK 21'
 
 # Step 3: Cache Maven dependencies
 - task: Cache@2
