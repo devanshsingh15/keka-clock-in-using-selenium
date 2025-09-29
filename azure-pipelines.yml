@@ -10,8 +10,8 @@ steps:
 # Step 1: Set up JDK
 - task: JavaToolInstaller@0
   inputs:
-    versionSpec: '21'         # or 17 depending on your local Java
-    jdkArchitecture: 'x64'
+    versionSpec: '21'
+    jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
 # Step 2: Build & Run Tests using Maven
