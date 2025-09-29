@@ -1,0 +1,48 @@
+trigger:
+  - main
+
+pool:
+  name: 'Default'  # Change to 'windows-latest' if you're not using a self-hosted agent
+
+variables:
+  MAVEN_OPTS: "-Xmx1024m"
+
+steps:
+
+# Step 1: Checkout code
+- checkout: self
+
+# Step 2: Install JDK 21 (use built-in task)
+- task: UseJavaVersion@1
+  inputs:
+    versionSpec: '21'
+    jdkArchitecture: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+# Step 3: Cache Maven dependencies
+- task: Cache@2
+  inputs:
+    key: 'maven | "$(Agent.OS)" | **/pom.xml'
+    path: $(HOME)/.m2/repository
+    restoreKeys: |
+      maven | "$(Agent.OS)"
+
+# Step 4: Install Chrome & Chromedriver (for Selenium)
+- powershell: |
+    choco install googlechrome --no-progress
+    choco install chromedriver --no-progress
+    chrome --version
+    chromedriver --version
+  displayName: 'Install Chrome & Chromedriver'
+
+# Step 5: Build the Maven project
+- script: mvn clean compile
+  displayName: 'Maven Clean & Compile'
+
+# Step 6: Run your Java main class (AutomateWebClockIn)
+- script: mvn exec:java -Dexec.mainClass="com.devansh.AutomateWebClockIn"
+  displayName: 'Run Keka Automation Script'
+
+# Step 7: Optional - Package the project
+- script: mvn package
+  displayName: 'Maven Package'
